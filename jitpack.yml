@@ -1,0 +1,6 @@
+jdk:
+  - openjdk17
+modules:
+  - ':base'
+  - ':core'
+  - ':jsr310'
