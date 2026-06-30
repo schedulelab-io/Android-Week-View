@@ -138,16 +138,12 @@ internal class EventChipDrawer(
         val bounds = eventChip.bounds
 
         val horizontalOffset = if (viewState.isLtr) {
-            bounds.left + viewState.eventPaddingHorizontal
+            bounds.left + viewState.eventPaddingHorizontal / 2f
         } else {
-            bounds.right - viewState.eventPaddingHorizontal
+            bounds.right - viewState.eventPaddingHorizontal / 2f
         }
 
-        val verticalOffset = if (eventChip.event.isAllDay) {
-            (bounds.height() - textLayout.height) / 2f
-        } else {
-            viewState.eventPaddingVertical.toFloat()
-        }
+        val verticalOffset = (bounds.height() - textLayout.height) / 2f
 
         withTranslation(x = horizontalOffset, y = bounds.top + verticalOffset) {
             draw(textLayout)

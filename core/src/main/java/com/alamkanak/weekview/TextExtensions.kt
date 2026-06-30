@@ -16,7 +16,7 @@ internal val CharSequence.processed: CharSequence
 internal fun CharSequence.toTextLayout(
     textPaint: TextPaint,
     width: Int,
-    alignment: Layout.Alignment = Layout.Alignment.ALIGN_NORMAL,
+    alignment: Layout.Alignment = Layout.Alignment.ALIGN_CENTER,
     spacingMultiplier: Float = 1f,
     spacingExtra: Float = 0f,
     includePad: Boolean = false
