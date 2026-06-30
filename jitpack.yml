@@ -1,4 +1,4 @@
 jdk:
   - openjdk11
 install:
-  - ./gradlew :base:install :core:install :jsr310:install
+  - ./gradlew :base:assembleRelease :core:assembleRelease :jsr310:assembleRelease
