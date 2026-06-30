@@ -1477,7 +1477,9 @@ class WeekView @JvmOverloads constructor(
          * @param data The data of the [WeekViewEntity.Event]
          * @param bounds The [RectF] representing the bounds of the event's [EventChip]
          */
-        open fun onEventClick(data: T, bounds: RectF) = Unit
+        open fun onEventClick(data: T, bounds: RectF) {
+            onEventClick(data)
+        }
 
         /**
          * Returns the data of the [WeekViewEntity.Event] that the user long-clicked on.
