@@ -22,3 +22,13 @@ android {
 dependencies {
     implementation libraries.kotlin
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+    }
+}

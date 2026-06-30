@@ -35,3 +35,13 @@ dependencies {
     testImplementation testing.mockitoKotlin
     testImplementation testing.truth
 }
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+            }
+        }
+    }
+}
