@@ -1,6 +1,4 @@
 jdk:
   - openjdk11
-modules:
-  - ':base'
-  - ':core'
-  - ':jsr310'
+install:
+  - ./gradlew :base:install :core:install :jsr310:install
