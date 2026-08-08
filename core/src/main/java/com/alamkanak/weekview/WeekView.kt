@@ -1195,8 +1195,9 @@ class WeekView @JvmOverloads constructor(
      * @param date A [Calendar] representing the date to scroll to.
      */
     @PublicApi
-    fun scrollToDate(date: Calendar) {
-        internalScrollToDate(date.withLocalTimeZone())
+    @JvmOverloads
+    fun scrollToDate(date: Calendar, animate: Boolean = true) {
+        internalScrollToDate(date.withLocalTimeZone(), animate = animate)
     }
 
     /**
@@ -1214,7 +1215,7 @@ class WeekView @JvmOverloads constructor(
         // range's own bound, and that bound carries midnight rather than the time asked for.
         val hour = localeDate.hour
         val minute = localeDate.minute
-        internalScrollToDate(localeDate) {
+        internalScrollToDate(localeDate, animate = animate) {
             scrollToTime(hour = hour, minute = minute, animate = animate)
         }
     }
@@ -1262,7 +1263,11 @@ class WeekView @JvmOverloads constructor(
         navigator.scrollVerticallyTo(offset = finalOffset, animate = animate)
     }
 
-    private fun internalScrollToDate(date: Calendar, onComplete: (Calendar) -> Unit = {}) {
+    private fun internalScrollToDate(
+        date: Calendar,
+        animate: Boolean = true,
+        onComplete: (Calendar) -> Unit = {}
+    ) {
         val adjustedDate = viewState.getStartDateInAllowedRange(date)
         if (adjustedDate.toEpochDays() == viewState.firstVisibleDate.toEpochDays()) {
             onComplete(adjustedDate)
@@ -1278,7 +1283,7 @@ class WeekView @JvmOverloads constructor(
             return
         }
 
-        navigator.scrollHorizontallyTo(date = adjustedDate) {
+        navigator.scrollHorizontallyTo(date = adjustedDate, animate = animate) {
             onComplete(adjustedDate)
         }
     }
