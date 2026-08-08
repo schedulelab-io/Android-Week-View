@@ -85,7 +85,7 @@ internal class Navigator(
         listener.onVerticalScrollingFinished()
     }
 
-    fun scrollVerticallyTo(offset: Float) {
+    fun scrollVerticallyTo(offset: Float, animate: Boolean = true) {
         val dayHeight = viewState.hourHeight * viewState.hoursPerDay
         val viewHeight = viewState.viewHeight
 
@@ -96,6 +96,18 @@ internal class Navigator(
             minimumValue = minY,
             maximumValue = max(minY, maxY)
         )
+
+        if (!animate) {
+            val previousOffset = viewState.currentOrigin.y
+            viewState.currentOrigin.y = finalOffset
+            listener.onVerticalScrollPositionChanged(
+                distance = abs(finalOffset) - abs(previousOffset)
+            )
+            afterNavigationFinishes {
+                listener.onVerticalScrollingFinished()
+            }
+            return
+        }
 
         animator.animate(
             fromValue = viewState.currentOrigin.y,

@@ -93,8 +93,9 @@ fun WeekView.scrollToDateTime(dateTime: LocalDateTime) {
  * @param time The [LocalTime] to scroll to.
  */
 @PublicApi
-fun WeekView.scrollToTime(time: LocalTime) {
-    scrollToTime(time.hour, time.minute)
+@JvmOverloads
+fun WeekView.scrollToTime(time: LocalTime, animate: Boolean = true) {
+    scrollToTime(time.hour, time.minute, animate)
 }
 
 @PublicApi

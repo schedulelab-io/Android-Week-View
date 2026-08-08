@@ -124,9 +124,11 @@ class WeekView @JvmOverloads constructor(
 
     private fun performPendingScroll() {
         val pendingScroll = viewState.pendingScroll
+        val animates = viewState.pendingScrollAnimates
         viewState.pendingScroll = null
+        viewState.pendingScrollAnimates = true
         pendingScroll?.let { dateTime ->
-            scrollToDateTime(dateTime)
+            scrollToDateTime(dateTime, animate = animates)
         }
     }
 
@@ -1199,10 +1201,11 @@ class WeekView @JvmOverloads constructor(
      * @param dateTime A [Calendar] representing the date time to scroll to.
      */
     @PublicApi
-    fun scrollToDateTime(dateTime: Calendar) {
+    @JvmOverloads
+    fun scrollToDateTime(dateTime: Calendar, animate: Boolean = true) {
         val localeDate = dateTime.withLocalTimeZone()
         internalScrollToDate(localeDate) {
-            scrollToTime(hour = it.hour, minute = it.minute)
+            scrollToTime(hour = it.hour, minute = it.minute, animate = animate)
         }
     }
 
@@ -1212,13 +1215,18 @@ class WeekView @JvmOverloads constructor(
      *
      * @param hour The hour to scroll to.
      * @param minute The minute to scroll to.
+     * @param animate Whether to animate the scroll. Pass false to place the time axis without
+     * animating, which is what a view being prepared off screen wants: an animation that runs as it
+     * is brought into view reads as the content sliding into place on arrival.
      */
     @PublicApi
-    fun scrollToTime(hour: Int, minute: Int) {
+    @JvmOverloads
+    fun scrollToTime(hour: Int, minute: Int, animate: Boolean = true) {
         if (isWaitingToBeLaidOut) {
             // If the view's dimensions have just changed or if it hasn't been laid out yet, we
             // postpone the action until onDraw() is called the next time.
             viewState.pendingScroll = viewState.firstVisibleDate.withTime(hour, minute)
+            viewState.pendingScrollAnimates = animate
             return
         }
 
@@ -1241,7 +1249,7 @@ class WeekView @JvmOverloads constructor(
         val maxOffset = viewState.dayHeight - height
         val finalOffset = min(maxOffset, verticalOffset) * (-1)
 
-        navigator.scrollVerticallyTo(offset = finalOffset)
+        navigator.scrollVerticallyTo(offset = finalOffset, animate = animate)
     }
 
     private fun internalScrollToDate(date: Calendar, onComplete: (Calendar) -> Unit = {}) {
