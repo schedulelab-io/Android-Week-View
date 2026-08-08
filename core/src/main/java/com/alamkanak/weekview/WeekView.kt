@@ -1204,8 +1204,12 @@ class WeekView @JvmOverloads constructor(
     @JvmOverloads
     fun scrollToDateTime(dateTime: Calendar, animate: Boolean = true) {
         val localeDate = dateTime.withLocalTimeZone()
+        // Held on to before scrolling, because a date outside the allowed range is replaced by the
+        // range's own bound, and that bound carries midnight rather than the time asked for.
+        val hour = localeDate.hour
+        val minute = localeDate.minute
         internalScrollToDate(localeDate) {
-            scrollToTime(hour = it.hour, minute = it.minute, animate = animate)
+            scrollToTime(hour = hour, minute = minute, animate = animate)
         }
     }
 
