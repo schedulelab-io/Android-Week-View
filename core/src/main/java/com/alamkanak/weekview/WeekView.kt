@@ -125,10 +125,16 @@ class WeekView @JvmOverloads constructor(
     private fun performPendingScroll() {
         val pendingScroll = viewState.pendingScroll
         val animates = viewState.pendingScrollAnimates
+        val pendingOffset = viewState.pendingVerticalScrollOffset
         viewState.pendingScroll = null
         viewState.pendingScrollAnimates = true
+        viewState.pendingVerticalScrollOffset = null
         pendingScroll?.let { dateTime ->
             scrollToDateTime(dateTime, animate = animates)
+        }
+        // Applied after any pending time, since an exact offset is the more specific request.
+        pendingOffset?.let { offset ->
+            verticalScrollOffset = offset
         }
     }
 
@@ -1306,15 +1312,26 @@ class WeekView @JvmOverloads constructor(
         get() = viewState.lastFullyVisibleHour
 
     /**
-     * Returns the current vertical offset (in pixels) from the top. This is 0 if WeekView is
-     * scrolled up all the way to [minHour].
+     * The current vertical offset (in pixels) from the top. This is 0 if WeekView is scrolled up all
+     * the way to [minHour].
+     *
+     * Setting it places the time axis exactly, without animating and without the hour rounding that
+     * [scrollToTime] applies, which is what carrying a scroll position from one WeekView to another
+     * needs. A value set before the view has been laid out is applied once it has been.
      */
     @PublicApi
-    val verticalScrollOffset: Float
+    var verticalScrollOffset: Float
         get() {
             // Invert the current origin, as it feels more natural
             // to have a positive verticalScrollOffset.
             return viewState.currentOrigin.y * -1
+        }
+        set(value) {
+            if (isWaitingToBeLaidOut) {
+                viewState.pendingVerticalScrollOffset = value
+                return
+            }
+            navigator.scrollVerticallyTo(offset = value * -1, animate = false)
         }
 
     /*

@@ -32,6 +32,7 @@ internal class ViewState {
     var firstVisibleDate: Calendar = today()
     var pendingScroll: Calendar? = null
     var pendingScrollAnimates: Boolean = true
+    var pendingVerticalScrollOffset: Float? = null
 
     private var isFirstDraw: Boolean = true
 
